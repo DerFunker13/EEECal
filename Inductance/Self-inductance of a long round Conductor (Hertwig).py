@@ -96,7 +96,7 @@ def create_frame(parent):
             f = float(entries[3].get())
             kappa = float(entries[4].get())
             delta = hertwig_skineffekt(f,kappa,d)
-            print(delta)
+            #print(delta)
             inductance = 2 * l * 100 * (np.log(4 * l / d) - 1 + (mu_r * delta)) * 10 ** -9
             result_var.set(f"{inductance:.4e}")
         except ValueError:
