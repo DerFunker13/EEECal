@@ -13,6 +13,8 @@ sidebar_color = "#FDE1E1"
 header_color = "#850303"
 visualisation_frame_color = "#ffffff"
 
+# -------------------------- BEGIN APP -----------------------------------
+
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -24,7 +26,8 @@ class App(tk.Tk):
         self.icon = tk.PhotoImage(file=os.path.join(current_dir, "icon.png"))
         self.iconphoto(True, self.icon)
 
-        # ---------------- HEADER ------------------------
+        # ---------------- HEADER ----------------------------------------
+
         self.header_frame = tk.Frame(self, bg=header_color, highlightbackground="#808080", highlightthickness=0.5)
         self.header_frame.place(relx=0.3, rely=0, relwidth=0.7, relheight=0.1)
         self.header_label = tk.Label(
@@ -38,7 +41,8 @@ class App(tk.Tk):
         )
         self.header_label.pack(pady=10, fill=tk.BOTH, expand=True)
 
-        # ---------------- SIDEBAR -----------------------
+        # ---------------- SIDEBAR ---------------------------------------
+
         self.sidebar_frame = tk.Frame(self, bg=sidebar_color, highlightbackground="#808080", highlightthickness=0.5)
         self.sidebar_frame.place(relx=0, rely=0, relwidth=0.3, relheight=1)
 
@@ -63,7 +67,8 @@ class App(tk.Tk):
         self.sidebar_canvas.bind_all("<MouseWheel>", lambda event: self.sidebar_canvas.yview_scroll(-1 * int(event.delta / 120), "units"))
 
 
-        # -------------------- SCROLLABLE MAIN FRAME ----------------------------
+        # -------------------- MAIN FRAME --------------------------------
+        # Scrollable
 
         self.main_container = tk.Frame(self, bg="white", highlightbackground="#808080", highlightthickness=0.5)
         self.main_container.place(relx=0.3, rely=0.1, relwidth=0.7, relheight=0.9)
@@ -87,7 +92,7 @@ class App(tk.Tk):
 
         self.main_canvas.bind_all("<MouseWheel>", lambda event: self.main_canvas.yview_scroll(-1 * int(event.delta / 120), "units"))
 
-        # -------------------- INIT ----------------------------
+        # -------------------- INIT --------------------------------------
         self.create_header()
         self.load_modules()
         self.create_brand_frame()
@@ -101,10 +106,14 @@ class App(tk.Tk):
         else:
             print("Default module not found.")
 
+# --------------- FUNCTION DEFINITIONS -----------------------------------
+
+    #self-explanatory
     def create_header(self):
         label = tk.Label(self.header_frame, text="EEECal", font=("Arial", 18), bg=header_color)
         label.pack(pady=10)
 
+    #loads the modules and the subfolders
     def load_modules(self):
         self.module_names = []
         self.module_paths = []
@@ -128,13 +137,14 @@ class App(tk.Tk):
                     self.module_paths.append(f"{folder_name}.{name}")
             self.i += 1
 
+    # generates the sidemenu
     def create_sidebar(self):
         modules_by_folder = defaultdict(list)
         for path in self.module_paths:
             folder, mod = path.split(".")
             modules_by_folder[folder].append((mod, path))
 
-        default_module = "dashboard.home"
+        default_module = "dashboard.home"      #makes the home button in the top position
         if default_module in self.module_paths:
             index = self.module_paths.index(default_module)
             home_button = tk.Button(
@@ -151,6 +161,7 @@ class App(tk.Tk):
             )
             home_button.pack(fill=tk.X, padx=10, pady=(5, 15))
 
+        # generates the other sidemenu entries
         for folder_name in self.subfolder_names:
             if folder_name == "dashboard" and "home" in [m[0] for m in modules_by_folder[folder_name]]:
                 modules_by_folder[folder_name] = [m for m in modules_by_folder[folder_name] if m[0] != "home"]
@@ -185,6 +196,7 @@ class App(tk.Tk):
                 )
                 button.pack(fill=tk.X, padx=20, pady=2)
 
+    # makes the logo and name
     def create_brand_frame(self):
         self.brand_frame = tk.Frame(self.sidebar_scrollable_frame, bg=sidebar_color)
         self.brand_frame.pack(fill=tk.X, padx=10, pady=10)
@@ -198,6 +210,7 @@ class App(tk.Tk):
                             font=("Arial", 15, "bold"))
         prg_name.pack(side=tk.LEFT, padx=10)
 
+    #loads modul in the mainframe
     def load_module(self, index):
         # Clear previous widgets
         for widget in self.main_scrollable_frame.winfo_children():

@@ -5,13 +5,13 @@ import sys
 import os
 import numpy as np
 
-# Add the parent directory (ECal) to the system path
+# Add the parent directory (EEECal) to the system path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Import lookup tables
 from dashboard.epsilon import epsilon_table
 from dashboard.conductance import conductance_table
-from dashboard.mu import mu_table  # You’ll need to create this if not present
+from dashboard.mu import mu_table
 
 
 def create_frame(parent):
@@ -34,7 +34,7 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # ─── Entry Fields ─────────────────────
-    labels = ["Length l (m)", "Diameter d (m)", "rel. Permeability μᵣ", "Frequency f (Hz)"]
+    labels = ["Length l (m)", "Diameter d (m)", "rel. Permeability μᵣ"]
     entries = []
 
     for i, text in enumerate(labels):
@@ -89,7 +89,6 @@ def create_frame(parent):
             l = float(entries[0].get())
             d = float(entries[1].get())
             mu_r = float(entries[2].get())
-            f = float(entries[3].get())
             inductance = 2 * l * 100 * (np.log(4 * l / d) - 1 + (mu_r / 4)) * 10 ** -9
             result_var.set(f"{inductance:.4e}")
         except ValueError:
@@ -98,14 +97,27 @@ def create_frame(parent):
     calc_button = tk.Button(frame, text="Calculate", command=calculate, bg="#e1e1e1")
     calc_button.grid(row=10, column=0, columnspan=2, pady=(10, 5))
 
+    
+    # ─── Text ────────────────────────────
+#    text = tk.Text(
+#        frame,
+#        bg="white",
+#        font=("Arial", 12),
+#        fg="gray"
+#    )
+#    text.grid(row=11, column=0, columnspan=4, pady=(10, 10))
+#    
+#    quote = """ """
+#    text.insert("1.0",quote)
+    
     # ─── Footer ────────────────────────────
     footer = tk.Label(
         frame,
-        text="Text la la la",
+        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954.",
         bg="white",
         font=("Arial", 10),
         fg="gray"
     )
-    footer.grid(row=11, column=0, columnspan=3, pady=(10, 10))
+    footer.grid(row=12, column=0, columnspan=3, pady=(10, 10))
 
     return frame
