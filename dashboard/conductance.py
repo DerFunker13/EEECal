@@ -12,3 +12,11 @@ conductance_table = [
     {1.00e-15,"Teflon"},
     {2.38e7,"Aluminum"},
 ]
+
+def find_conductance(material_name):
+    for value, name in conductance_table:
+        if name.lower() == material_name.lower():
+            return value
+    return None  # Not found
+
+#print(find_conductance("Copper"))

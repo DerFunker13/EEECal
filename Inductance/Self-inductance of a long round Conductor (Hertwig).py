@@ -12,6 +12,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from dashboard.epsilon import epsilon_table
 from dashboard.conductance import conductance_table
 from dashboard.mu import mu_table
+from dashboard.skineffektfaktor import hertwig_skineffekt
+
 
 
 def create_frame(parent):
@@ -34,7 +36,7 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # ─── Entry Fields ─────────────────────
-    labels = ["Length l (m)", "Diameter d (m)", "rel. Permeability μᵣ"]
+    labels = ["Length l (m)", "Diameter d (m)", "rel. Permeability μᵣ", "Frequency f (Hz)", "Conductance ϰ (S/m)"]
     entries = []
 
     for i, text in enumerate(labels):
@@ -61,19 +63,19 @@ def create_frame(parent):
     mu_cb.bind("<<ComboboxSelected>>", on_mu_select)
 
     # ─── Conductance ComboBox ──────────────
-#    def on_cond_select(event):
-#        selected = cond_cb.get()
-#        match = next((v for v, mat in conductance_table if mat == selected), None)
-#        if match is not None:
-#            entries[4].delete(0, tk.END)
-#            entries[4].insert(0, str(match))
-#
-#    cond_cb_label = tk.Label(frame, text="Material (σ)", bg="white", anchor="w")
-#    cond_cb_label.grid(row=4, column=2, sticky="w", padx=10, pady=(5, 0))
-#
-#    cond_cb = ttk.Combobox(frame, values=[mat for _, mat in conductance_table], width=28)
-#    cond_cb.grid(row=5, column=2, padx=10, pady=(5, 0))
-#    cond_cb.bind("<<ComboboxSelected>>", on_cond_select)
+    def on_cond_select(event):
+        selected = cond_cb.get()
+        match = next((v for v, mat in conductance_table if mat == selected), None)
+        if match is not None:
+            entries[4].delete(0, tk.END)
+            entries[4].insert(0, str(match))
+
+    cond_cb_label = tk.Label(frame, text="Material (σ)", bg="white", anchor="w")
+    cond_cb_label.grid(row=5, column=2, sticky="w", padx=10, pady=(5, 0))
+
+    cond_cb = ttk.Combobox(frame, values=[mat for _, mat in conductance_table], width=28)
+    cond_cb.grid(row=6, column=2, padx=10, pady=(5, 0))
+    cond_cb.bind("<<ComboboxSelected>>", on_cond_select)
 
     # ─── Result Output ─────────────────────
     result_label = tk.Label(frame, text="Inductance (H)", bg="white", anchor="w")
@@ -83,13 +85,19 @@ def create_frame(parent):
     result_entry = tk.Entry(frame, textvariable=result_var, width=30, state="readonly")
     result_entry.grid(row=9, column=1, padx=10, pady=(15, 5))
 
+    precision_label = tk.Label(frame, text="Error < 5%", bg="white", anchor="w")
+    precision_label.grid(row=9, column=2, sticky="w", padx=10, pady=5)
     # ─── Calculate Button ──────────────────
     def calculate():
         try:
             l = float(entries[0].get())
             d = float(entries[1].get())
             mu_r = float(entries[2].get())
-            inductance = 2 * l * 100 * (np.log(4 * l / d) - 1 + (mu_r / 4)) * 10 ** -9
+            f = float(entries[3].get())
+            kappa = float(entries[4].get())
+            delta = hertwig_skineffekt(f,kappa,d)
+            print(delta)
+            inductance = 2 * l * 100 * (np.log(4 * l / d) - 1 + (mu_r * delta)) * 10 ** -9
             result_var.set(f"{inductance:.4e}")
         except ValueError:
             result_var.set("Invalid input!")
