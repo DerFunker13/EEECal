@@ -9,10 +9,10 @@ import numpy as np
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Import lookup tables
-from dashboard.epsilon import epsilon_table
-from dashboard.conductance import conductance_table
-from dashboard.mu import mu_table
-from dashboard.skineffektfaktor import hertwig_skineffekt
+from addresources.epsilon import epsilon_table
+from addresources.conductance import conductance_table
+from addresources.mu import mu_table
+from addresources.skineffektfaktor import hertwig_skineffekt
 
 
 
@@ -21,7 +21,7 @@ def create_frame(parent):
 
     # ─── Title ─────────────────────────────
     title_label = tk.Label(frame, text="Self-Inductance of a Round Magnetic Conductor", font=("Arial", 16, "bold"), bg="white")
-    title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
+    title_label.grid(row=0, column=0, columnspan=4, sticky="w", padx=10, pady=10)
 
     # ─── Image (Top-Right) ────────────────
     image_path = os.path.join(os.path.dirname(__file__), "pic_long round conductor.png")
@@ -31,7 +31,7 @@ def create_frame(parent):
         photo = ImageTk.PhotoImage(image)
         image_label = tk.Label(frame, image=photo, bg="white")
         image_label.image = photo
-        image_label.grid(row=0, column=3, rowspan=10, sticky="ne", padx=10, pady=10)
+        image_label.grid(row=0, column=2, rowspan=1, sticky="ne", padx=10, pady=10)
     except Exception as e:
         print("Image load error:", e)
 

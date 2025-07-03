@@ -131,7 +131,7 @@ class App(tk.Tk):
             for file in os.listdir(os.path.join(dir_path, folder_name)):
                 if file.endswith(".py") and not file.startswith("__"):
                     name = file[:-3]
-                    if folder_name == "dashboard" and name != "home":
+                    if (folder_name == "dashboard" and name != "home") or (folder_name == "addresources"):
                         continue
                     self.module_names.append(name)
                     self.module_paths.append(f"{folder_name}.{name}")

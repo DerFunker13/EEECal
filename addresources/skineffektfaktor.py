@@ -1,4 +1,4 @@
-import dashboard.conductance as cond
+import addresources.conductance as cond
 import numpy as np
 
 #Skineffekt-Faktor in Näherung nach Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954.
