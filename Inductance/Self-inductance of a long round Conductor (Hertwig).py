@@ -21,7 +21,7 @@ def create_frame(parent):
 
     # ─── Title ─────────────────────────────
     title_label = tk.Label(frame, text="Self-Inductance of a Round Magnetic Conductor", font=("Arial", 16, "bold"), bg="white")
-    title_label.grid(row=0, column=0, columnspan=4, sticky="w", padx=10, pady=10)
+    title_label.grid(row=0, column=0, columnspan=5, sticky="w", padx=10, pady=10)
 
     # ─── Image (Top-Right) ────────────────
     image_path = os.path.join(os.path.dirname(__file__), "pic_long round conductor.png")
@@ -31,19 +31,20 @@ def create_frame(parent):
         photo = ImageTk.PhotoImage(image)
         image_label = tk.Label(frame, image=photo, bg="white")
         image_label.image = photo
-        image_label.grid(row=0, column=2, rowspan=1, sticky="ne", padx=10, pady=10)
+        image_label.grid(row=1, column=3, rowspan=10, sticky="ne", padx=10, pady=10)
     except Exception as e:
         print("Image load error:", e)
 
     # ─── Entry Fields ─────────────────────
     labels = ["Length l (m)", "Diameter d (m)", "rel. Permeability μᵣ", "Frequency f (Hz)", "Conductance ϰ (S/m)"]
     entries = []
+    default_values = ["3","5e-3","1","0","59600000.0"]
 
     for i, text in enumerate(labels):
         lbl = tk.Label(frame, text=text, bg="white", anchor="w")
         lbl.grid(row=i+2, column=0, sticky="w", padx=10, pady=5)
 
-        ent = tk.Entry(frame, width=30)
+        ent = tk.Entry(frame, width=30, textvariable=tk.StringVar(value=default_values[i]))
         ent.grid(row=i+2, column=1, padx=10, pady=5)
         entries.append(ent)
 
@@ -74,6 +75,7 @@ def create_frame(parent):
     cond_cb_label.grid(row=5, column=2, sticky="w", padx=10, pady=(5, 0))
 
     cond_cb = ttk.Combobox(frame, values=[mat for _, mat in conductance_table], width=28)
+    cond_cb.current(0)
     cond_cb.grid(row=6, column=2, padx=10, pady=(5, 0))
     cond_cb.bind("<<ComboboxSelected>>", on_cond_select)
 

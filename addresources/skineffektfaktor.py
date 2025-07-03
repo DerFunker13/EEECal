@@ -6,12 +6,13 @@ import numpy as np
 def hertwig_skineffekt(f,kappa,d):
     try:
         kappa_copper=cond.find_conductance("Copper")
+        if(f==0):
+            return 0.25
         f2=f*kappa/kappa_copper
         #print(f2)
         k=6.53
         delta_f=k/(np.sqrt(f2)*d*100) #*100: cm->m
-        if(f2<1e4):
-             return 0.25
+        
         delta=min(0.25,delta_f)
         return delta
     except ValueError:

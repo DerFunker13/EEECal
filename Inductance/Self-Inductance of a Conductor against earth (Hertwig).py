@@ -20,11 +20,11 @@ def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
     # ─── Title ─────────────────────────────
-    title_label = tk.Label(frame, text="Self-Inductance of a twin line (forward and return)", font=("Arial", 16, "bold"), bg="white")
+    title_label = tk.Label(frame, text="Self-Inductance of a Conductor against Earth", font=("Arial", 16, "bold"), bg="white")
     title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
 
     # ─── Image (Top-Right) ────────────────
-    image_path = os.path.join(os.path.dirname(__file__), "round twin line.jpg")
+    image_path = os.path.join(os.path.dirname(__file__), "pic_conductor against earth.jpg")
     try:
         image = Image.open(image_path)
         image = image.resize((200, 125))
@@ -36,14 +36,15 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # ─── Entry Fields ─────────────────────
-    labels = ["Length l (m)", "Diameter d (m)", "Distance a (m)","rel. Permeability μᵣ", "Frequency f (Hz)", "Conductance ϰ (S/m)"]
+    labels = ["Length l (m)", "Diameter d (m)", "Distance to earth h (m)","rel. Permeability μᵣ", "Frequency f (Hz)", "Conductance ϰ (S/m)"]
     entries = []
+    default_values = ["3","5e-3","25e-2","1","0","59600000.0"]
 
     for i, text in enumerate(labels):
         lbl = tk.Label(frame, text=text, bg="white", anchor="w")
         lbl.grid(row=i+2, column=0, sticky="w", padx=10, pady=5)
 
-        ent = tk.Entry(frame, width=30)
+        ent = tk.Entry(frame, width=30, textvariable=tk.StringVar(value=default_values[i]))
         ent.grid(row=i+2, column=1, padx=10, pady=5)
         entries.append(ent)
 
@@ -52,7 +53,7 @@ def create_frame(parent):
         selected = mu_cb.get()
         match = next((v for v, mat in mu_table if mat == selected), None)
         if match is not None:
-            entries[2].delete(0, tk.END)
+            entries[3].delete(0, tk.END)
             entries[3].insert(0, str(match))
 
     mu_cb_label = tk.Label(frame, text="Material (μᵣ)", bg="white", anchor="w")
@@ -74,6 +75,7 @@ def create_frame(parent):
     cond_cb_label.grid(row=6, column=2, sticky="w", padx=10, pady=(5, 0))
 
     cond_cb = ttk.Combobox(frame, values=[mat for _, mat in conductance_table], width=28)
+    cond_cb.current(0)
     cond_cb.grid(row=7, column=2, padx=10, pady=(5, 0))
     cond_cb.bind("<<ComboboxSelected>>", on_cond_select)
 
@@ -90,15 +92,15 @@ def create_frame(parent):
     # ─── Calculate Button ──────────────────
     def calculate():
         try:
-            l = float(entries[0].get())
-            d = float(entries[1].get())
-            a = float(entries[2].get())
+            l = float(entries[0].get())*100 #m->cm
+            d = float(entries[1].get())*100 #m->cm
+            h = float(entries[2].get())*100 #m->cm
             mu_r = float(entries[3].get())
             f = float(entries[4].get())
             kappa = float(entries[5].get())
             delta = hertwig_skineffekt(f,kappa,d)
             #print(delta)
-            inductance = 4 * l * 100 * (np.log(2 * a / d) - (a/l) + (mu_r * delta)) * 10 ** -9
+            inductance =  (2*l*(np.log((l+np.sqrt(l**2 + d**2 /4))/(l+np.sqrt(l**2 + 4 * h**2)))+np.log(4*h/d)) + 2*(np.sqrt(l**2 + 4 * h**2)-np.sqrt(l**2 + d**2 /4)+ mu_r*delta*l-2*h+(d/2)))* 10**(-9)
             result_var.set(f"{inductance:.4e}")
         except ValueError:
             result_var.set("Invalid input!")
@@ -108,21 +110,22 @@ def create_frame(parent):
 
     
     # ─── Text ────────────────────────────
-#    text = tk.Text(
-#        frame,
-#        bg="white",
-#        font=("Arial", 12),
-#        fg="gray"
-#    )
-#    text.grid(row=12, column=0, columnspan=4, pady=(10, 10))
-#    
-#    quote = """ """
-#    text.insert("1.0",quote)
+    text = tk.Text(
+        frame,
+        bg="white",
+        font=("Arial", 12),
+        fg="gray"
+    )
+    text.grid(row=12, column=0, columnspan=4, pady=(10, 10))
+    
+    quote = """The formula applies to a horizontal conductor above the ground.
+    The Earth is used as the return conductor."""
+    text.insert("1.0",quote)
     
     # ─── Footer ────────────────────────────
     footer = tk.Label(
         frame,
-        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität einer Doppelleitung.",
+        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität eines Leiters gegen Erde.",
         bg="white",
         font=("Arial", 10),
         fg="gray"

@@ -1,9 +1,9 @@
 # kappa in S/m , Material
 
 conductance_table = [
+    (5.96e7,"Copper"),
     (2.38e7,"Aluminum"),
     (1.00e-2,"Carbon (graphite)"),
-    (5.96e7,"Copper"),
     (1.00e-12,"Glass"),
     (3.50e7,"Gold"),   
     (1.02e7,"Iron"),
