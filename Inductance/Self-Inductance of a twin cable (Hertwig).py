@@ -20,11 +20,11 @@ def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
     # ─── Title ─────────────────────────────
-    title_label = tk.Label(frame, text="Self-Inductance of a Round Magnetic Conductor", font=("Arial", 16, "bold"), bg="white")
+    title_label = tk.Label(frame, text="Self-Inductance of a twin cable", font=("Arial", 16, "bold"), bg="white")
     title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
 
     # ─── Image (Top-Right) ────────────────
-    image_path = os.path.join(os.path.dirname(__file__), "pic_long round conductor.png")
+    image_path = os.path.join(os.path.dirname(__file__), "r.png")
     try:
         image = Image.open(image_path)
         image = image.resize((200, 250))
@@ -121,7 +121,7 @@ def create_frame(parent):
     # ─── Footer ────────────────────────────
     footer = tk.Label(
         frame,
-        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Selbstinduktivität eines gestreckten Rundleiters",
+        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität einer Doppelleitung.",
         bg="white",
         font=("Arial", 10),
         fg="gray"
