@@ -131,11 +131,18 @@ def create_frame(parent):
                 M=2*l*(np.log(2*l/a-Q+a/l))* 10**(-9)
             if flag==1:
                 result_var.set("Invalid input!")
+            
             if n<2 or n>20:
                 result_var.set("n must be between 2 and 20!")
+            
             L1 =  (2*l*(np.log((l+np.sqrt(l**2 + d**2 /4))/(l+np.sqrt(l**2 + 4 * h**2)))+np.log(4*h/d)) + 2*(np.sqrt(l**2 + 4 * h**2)-np.sqrt(l**2 + d**2 /4)+ mu_r*delta*l-2*h+(d/2)))* 10**(-9)
             
-            inductance =  (((L1+(n-1)*M)/n)-kn[int(n)-2])
+            k=kn[1]
+            inductance =  (((L1+(n-1)*M)/n)-l*k[int(n)-2]* 10**(-9))
+            #print(k[int(n)-2])
+            #print(L1)
+            #print(inductance)
+            #print(type(inductance))
             result_var.set(f"{inductance:.4e}")
         except ValueError:
             result_var.set("Invalid input!")
