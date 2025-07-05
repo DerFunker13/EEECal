@@ -24,10 +24,10 @@ def create_frame(parent):
     title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
 
     # ─── Image (Top-Right) ────────────────
-    image_path = os.path.join(os.path.dirname(__file__), "pic_conductor against earth.jpg")
+    image_path = os.path.join(os.path.dirname(__file__), "pic_conductor against earth.png")
     try:
         image = Image.open(image_path)
-        image = image.resize((200, 125))
+        image = image.resize((250, 200))
         photo = ImageTk.PhotoImage(image)
         image_label = tk.Label(frame, image=photo, bg="white")
         image_label.image = photo
@@ -71,7 +71,7 @@ def create_frame(parent):
             entries[5].delete(0, tk.END)
             entries[5].insert(0, str(match))
 
-    cond_cb_label = tk.Label(frame, text="Material (σ)", bg="white", anchor="w")
+    cond_cb_label = tk.Label(frame, text="Material (ϰ)", bg="white", anchor="w")
     cond_cb_label.grid(row=6, column=2, sticky="w", padx=10, pady=(5, 0))
 
     cond_cb = ttk.Combobox(frame, values=[mat for _, mat in conductance_table], width=28)

@@ -71,7 +71,7 @@ def create_frame(parent):
             entries[4].delete(0, tk.END)
             entries[4].insert(0, str(match))
 
-    cond_cb_label = tk.Label(frame, text="Material (σ)", bg="white", anchor="w")
+    cond_cb_label = tk.Label(frame, text="Material (ϰ)", bg="white", anchor="w")
     cond_cb_label.grid(row=5, column=2, sticky="w", padx=10, pady=(5, 0))
 
     cond_cb = ttk.Combobox(frame, values=[mat for _, mat in conductance_table], width=28)
