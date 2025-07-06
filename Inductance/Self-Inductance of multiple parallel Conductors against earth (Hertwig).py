@@ -35,8 +35,6 @@ kn=[
 ]
 
 
-
-
 def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
@@ -166,7 +164,7 @@ def create_frame(parent):
     # ─── Footer ────────────────────────────
     footer = tk.Label(
         frame,
-        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität eines Leiters gegen Erde.",
+        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität mehrerer paralleler Leiter gegen Erde.",
         bg="white",
         font=("Arial", 10),
         fg="gray"
