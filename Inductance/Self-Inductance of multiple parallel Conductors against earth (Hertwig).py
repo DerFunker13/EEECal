@@ -38,11 +38,11 @@ kn=[
 def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
-    # ─── Title ─────────────────────────────
+    # --- Title -----------------------------
     title_label = tk.Label(frame, text="Self-Inductance of multiple Conductors against Earth", font=("Arial", 16, "bold"), bg="white")
     title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
 
-    # ─── Image (Top-Right) ────────────────
+    # --- Image (Top-Right) ----------------
     image_path = os.path.join(os.path.dirname(__file__), "pic_multiple conductors against earth.png")
     try:
         image = Image.open(image_path)
@@ -54,7 +54,7 @@ def create_frame(parent):
     except Exception as e:
         print("Image load error:", e)
 
-    # ─── Entry Fields ─────────────────────
+    # --- Entry Fields ---------------------
     labels = ["Length l (m)", "Diameter d (m)", "Distance between conductors a (m)", "Distance to earth h (m)","Number of conductors n","rel. Permeability μᵣ", "Frequency f (Hz)", "Conductance ϰ (S/m)"]
     entries = []
     default_values = ["3","5e-3","25e-2","25e-2","2","1","0","59600000.0"]
@@ -67,7 +67,7 @@ def create_frame(parent):
         ent.grid(row=i+2, column=1, padx=10, pady=5)
         entries.append(ent)
 
-    # ─── Permeability ComboBox ─────────────
+    # --- Permeability ComboBox -------------
     def on_mu_select(event):
         selected = mu_cb.get()
         match = next((v for v, mat in mu_table if mat == selected), None)
@@ -82,7 +82,7 @@ def create_frame(parent):
     mu_cb.grid(row=7, column=2, padx=10, pady=(5, 0))
     mu_cb.bind("<<ComboboxSelected>>", on_mu_select)
 
-    # ─── Conductance ComboBox ──────────────
+    # --- Conductance ComboBox --------------
     def on_cond_select(event):
         selected = cond_cb.get()
         match = next((v for v, mat in conductance_table if mat == selected), None)
@@ -98,7 +98,7 @@ def create_frame(parent):
     cond_cb.grid(row=9, column=2, padx=10, pady=(5, 0))
     cond_cb.bind("<<ComboboxSelected>>", on_cond_select)
 
-    # ─── Result Output ─────────────────────
+    # --- Result Output ---------------------
     result_label = tk.Label(frame, text="Inductance (H)", bg="white", anchor="w")
     result_label.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
 
@@ -108,7 +108,7 @@ def create_frame(parent):
 
     precision_label = tk.Label(frame, text="Error ≈ 1%", bg="white", anchor="w")
     precision_label.grid(row=12, column=2, sticky="w", padx=10, pady=5)
-    # ─── Calculate Button ──────────────────
+    # --- Calculate Button ------------------
     def calculate():
         try:
             l = float(entries[0].get())*100 #m->cm
@@ -149,7 +149,7 @@ def create_frame(parent):
     calc_button.grid(row=13, column=0, columnspan=2, pady=(10, 5))
 
     
-    # ─── Text ────────────────────────────
+    # --- Text ----------------------------
 #    text = tk.Text(
 #        frame,
 #        bg="white",
@@ -161,7 +161,7 @@ def create_frame(parent):
 #    quote = """ """
 #    text.insert("1.0",quote)
     
-    # ─── Footer ────────────────────────────
+    # --- Footer ----------------------------
     footer = tk.Label(
         frame,
         text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität mehrerer paralleler Leiter gegen Erde.",

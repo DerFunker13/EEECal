@@ -21,11 +21,11 @@ from addresources.interpolate import interpolate
 def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
-    # ─── Title ─────────────────────────────
+    # --- Title -----------------------------
     title_label = tk.Label(frame, text="Self-Inductance of a concentric cable (low freq.)", font=("Arial", 16, "bold"), bg="white")
     title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
 
-    # ─── Image (Top-Right) ────────────────
+    # --- Image (Top-Right) ----------------
     image_path = os.path.join(os.path.dirname(__file__), "pic_koncentric cable.png")
     try:
         image = Image.open(image_path)
@@ -37,7 +37,7 @@ def create_frame(parent):
     except Exception as e:
         print("Image load error:", e)
 
-    # ─── Entry Fields ─────────────────────
+    # --- Entry Fields ---------------------
     labels = ["Length l (m)", "Inner diameter d (m)", "Outer diameter D (m)"]
     entries = []
     default_values = ["3","2e-3","1e-2"]
@@ -50,7 +50,7 @@ def create_frame(parent):
         ent.grid(row=i+2, column=1, padx=10, pady=5)
         entries.append(ent)
 
-    # ─── Result Output ─────────────────────
+    # --- Result Output ---------------------
     result_label = tk.Label(frame, text="Inductance (H)", bg="white", anchor="w")
     result_label.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
 
@@ -60,7 +60,7 @@ def create_frame(parent):
 
     precision_label = tk.Label(frame, text="Error < 5%", bg="white", anchor="w")
     precision_label.grid(row=12, column=2, sticky="w", padx=10, pady=5)
-    # ─── Calculate Button ──────────────────
+    # --- Calculate Button ------------------
     def calculate():
         try:
             l = float(entries[0].get())*100 #m->cm
@@ -76,7 +76,7 @@ def create_frame(parent):
     calc_button.grid(row=13, column=0, columnspan=2, pady=(10, 5))
 
     
-    # ─── Text ────────────────────────────
+    # --- Text ----------------------------
 #    text = tk.Text(
 #        frame,
 #        bg="white",
@@ -88,7 +88,7 @@ def create_frame(parent):
 #    quote = """ """
 #    text.insert("1.0",quote)
     
-    # ─── Footer ────────────────────────────
+    # --- Footer ----------------------------
     footer = tk.Label(
         frame,
         text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität eines konzentrischen Kabels.",
