@@ -120,6 +120,7 @@ def create_frame(parent):
             f = float(entries[6].get())
             kappa = float(entries[7].get())
             delta = hertwig_skineffekt(f,kappa,d)
+            n=int(n)
             #print(delta)
             if 2*h<l:
                 (flag, P)=interpolate(P2hl[0], P2hl[1], (2*h/l))
