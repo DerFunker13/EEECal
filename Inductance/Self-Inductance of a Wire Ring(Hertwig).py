@@ -22,11 +22,11 @@ def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
     # --- Title -----------------------------
-    title_label = tk.Label(frame, text="Self-Inductance of a Wire Ring", font=("Arial", 16, "bold"), bg="white")
+    title_label = tk.Label(frame, text="Self-Inductance of a Cage(low freq.)", font=("Arial", 16, "bold"), bg="white")
     title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
 
     # --- Image (Top-Right) ----------------
-    image_path = os.path.join(os.path.dirname(__file__), "pic_cage.jpg")
+    image_path = os.path.join(os.path.dirname(__file__), "pic_wire ring.jpg")
     try:
         image = Image.open(image_path)
         image = image.resize((250, 200))
@@ -38,9 +38,9 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # --- Entry Fields ---------------------
-    labels = ["Length l (m)", "Radius ρ (m)", "Diameter d (m)", "Line number n"]
+    labels = ["Diameter D (m)", "Wire diameter d (m)", "rel. Permeability μᵣ", "Frequency f (Hz)", "Conductance ϰ (S/m)"]
     entries = []
-    default_values = ["3","12.5e-2","0.5e-2","6"]
+    default_values = ["50e-2","1e-2","1","10e6","59600000.0"]
 
     for i, text in enumerate(labels):
         lbl = tk.Label(frame, text=text, bg="white", anchor="w")
@@ -49,6 +49,37 @@ def create_frame(parent):
         ent = tk.Entry(frame, width=30, textvariable=tk.StringVar(value=default_values[i]))
         ent.grid(row=i+2, column=1, padx=10, pady=5)
         entries.append(ent)
+
+    # --- Permeability ComboBox -------------
+    def on_mu_select(event):
+        selected = mu_cb.get()
+        match = next((v for v, mat in mu_table if mat == selected), None)
+        if match is not None:
+            entries[2].delete(0, tk.END)
+            entries[2].insert(0, str(match))
+
+    mu_cb_label = tk.Label(frame, text="Material (μᵣ)", bg="white", anchor="w")
+    mu_cb_label.grid(row=3, column=2, sticky="w", padx=10, pady=(5, 0))
+
+    mu_cb = ttk.Combobox(frame, values=[mat for _, mat in mu_table], width=28)
+    mu_cb.grid(row=4, column=2, padx=10, pady=(5, 0))
+    mu_cb.bind("<<ComboboxSelected>>", on_mu_select)
+
+    # --- Conductance ComboBox --------------
+    def on_cond_select(event):
+        selected = cond_cb.get()
+        match = next((v for v, mat in conductance_table if mat == selected), None)
+        if match is not None:
+            entries[4].delete(0, tk.END)
+            entries[4].insert(0, str(match))
+
+    cond_cb_label = tk.Label(frame, text="Material (ϰ)", bg="white", anchor="w")
+    cond_cb_label.grid(row=5, column=2, sticky="w", padx=10, pady=(5, 0))
+
+    cond_cb = ttk.Combobox(frame, values=[mat for _, mat in conductance_table], width=28)
+    cond_cb.current(0)
+    cond_cb.grid(row=6, column=2, padx=10, pady=(5, 0))
+    cond_cb.bind("<<ComboboxSelected>>", on_cond_select)
 
     # --- Result Output ---------------------
     result_label = tk.Label(frame, text="Inductance (H)", bg="white", anchor="w")
@@ -63,12 +94,13 @@ def create_frame(parent):
     # --- Calculate Button ------------------
     def calculate():
         try:
-            l = float(entries[0].get())*100 #m->cm
-            rho = float(entries[1].get())*100 #m->cm
-            d = float(entries[2].get())*100 #m->cm
-            n = float(entries[3].get())
-            #print(n)
-            inductance =  (2*l*(np.log(2*l/np.power((0.3894*d*n*np.power(rho,n-1)),1/n))-1)) * 10**(-9)
+            D = float(entries[0].get())*100 #m->cm
+            d = float(entries[1].get())*100 #m->cm
+            mu = float(entries[2].get())
+            f = float(entries[3].get())
+            kappa = float(entries[4].get())
+            delta = hertwig_skineffekt(f,kappa,d)
+            inductance =  (2*np.pi*D*(np.log(8*D/d)-2+mu*delta))*10**(-9)
             result_var.set(f"{inductance:.4e}")
         except ValueError:
             result_var.set("Invalid input!")
@@ -92,7 +124,7 @@ def create_frame(parent):
     # --- Footer ----------------------------
     footer = tk.Label(
         frame,
-        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität eines Drahtringes.",
+        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität einer Reuse.",
         bg="white",
         font=("Arial", 10),
         fg="gray"
