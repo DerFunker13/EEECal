@@ -22,7 +22,7 @@ def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
     # --- Title -----------------------------
-    title_label = tk.Label(frame, text="Self-Inductance of a Cage(low freq.)", font=("Arial", 16, "bold"), bg="white")
+    title_label = tk.Label(frame, text="Self-Inductance of a Wire Ring", font=("Arial", 16, "bold"), bg="white")
     title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
 
     # --- Image (Top-Right) ----------------
@@ -124,7 +124,7 @@ def create_frame(parent):
     # --- Footer ----------------------------
     footer = tk.Label(
         frame,
-        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität einer Reuse.",
+        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität eines Drahtringes.",
         bg="white",
         font=("Arial", 10),
         fg="gray"

@@ -22,11 +22,11 @@ def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
     # --- Title -----------------------------
-    title_label = tk.Label(frame, text="Self-Inductance of a Cage(low freq.)", font=("Arial", 16, "bold"), bg="white")
+    title_label = tk.Label(frame, text="Self-Inductance of a flat band ring (low. freq.)", font=("Arial", 16, "bold"), bg="white")
     title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
 
     # --- Image (Top-Right) ----------------
-    image_path = os.path.join(os.path.dirname(__file__), "pic_cage.jpg")
+    image_path = os.path.join(os.path.dirname(__file__), "pic_flat band ring.jpg")
     try:
         image = Image.open(image_path)
         image = image.resize((250, 200))
@@ -38,9 +38,9 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # --- Entry Fields ---------------------
-    labels = ["Length l (m)", "Radius ρ (m)", "Diameter d (m)", "Line number n"]
+    labels = ["Diameter D (m)", "Width b (m)"]
     entries = []
-    default_values = ["3","12.5e-2","0.5e-2","6"]
+    default_values = ["50e-2","5e-2"]
 
     for i, text in enumerate(labels):
         lbl = tk.Label(frame, text=text, bg="white", anchor="w")
@@ -50,6 +50,10 @@ def create_frame(parent):
         ent.grid(row=i+2, column=1, padx=10, pady=5)
         entries.append(ent)
 
+    # --- Text ------------------------------
+
+    hinweise = tk.Label(frame, text="Thickness << Width", bg="white", anchor="w")
+    hinweise.grid(row=4, column=1, padx=10, pady=5)
     # --- Result Output ---------------------
     result_label = tk.Label(frame, text="Inductance (H)", bg="white", anchor="w")
     result_label.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
@@ -63,12 +67,10 @@ def create_frame(parent):
     # --- Calculate Button ------------------
     def calculate():
         try:
-            l = float(entries[0].get())*100 #m->cm
-            rho = float(entries[1].get())*100 #m->cm
-            d = float(entries[2].get())*100 #m->cm
-            n = float(entries[3].get())
-            #print(n)
-            inductance =  (2*l*(np.log(2*l/np.power((0.3894*d*n*np.power(rho,n-1)),1/n))-1)) * 10**(-9)
+            D = float(entries[0].get())*100 #m->cm
+            b = float(entries[1].get())*100 #m->cm
+            
+            inductance =  (2*np.pi*D*(np.log(4*D/b)-0.5))*10**(-9)
             result_var.set(f"{inductance:.4e}")
         except ValueError:
             result_var.set("Invalid input!")
@@ -92,7 +94,7 @@ def create_frame(parent):
     # --- Footer ----------------------------
     footer = tk.Label(
         frame,
-        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität eines Drahtringes.",
+        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität eines Ringes aus Flachband.",
         bg="white",
         font=("Arial", 10),
         fg="gray"
