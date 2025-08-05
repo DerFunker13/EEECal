@@ -88,7 +88,7 @@ def create_frame(parent):
         elif i == 2:
             ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
                          textvariable=distance_unit_var).grid(row=i + 2, column=2, padx=(2, 0))
-        elif i == 2:
+        elif i == 3:
             ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
                          textvariable=height_unit_var).grid(row=i + 2, column=2, padx=(2, 0))
         elif i == 6:
@@ -127,7 +127,7 @@ def create_frame(parent):
     cond_cb.bind("<<ComboboxSelected>>", on_cond_select)
 
     # --- Result Output ---------------------
-    result_label = tk.Label(frame, text="Inductance (H)", bg="white", anchor="w")
+    result_label = tk.Label(frame, text="Inductance L", bg="white", anchor="w")
     result_label.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
 
     result_var = tk.StringVar()
@@ -145,7 +145,7 @@ def create_frame(parent):
             l = float(entries[0].get())*100* unit_factors_length[length_unit_var.get()] #m->cm
             d = float(entries[1].get())*100* unit_factors_length[diameter_unit_var.get()] #m->cm
             a = float(entries[2].get())*100* unit_factors_length[distance_unit_var.get()] #m->cm
-            h = float(entries[3].get())*100* unit_factors_length[distance_unit_var.get()] #m->cm
+            h = float(entries[3].get())*100* unit_factors_length[height_unit_var.get()] #m->cm
             n = float(entries[4].get())
             mu_r = float(entries[5].get())
             f = float(entries[6].get())* unit_factors_frequency[frequency_unit_var.get()]

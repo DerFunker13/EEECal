@@ -17,13 +17,17 @@ from addresources.interpolate import interpolate
 
 #local tables:
 
+# Unit conversion factors
+unit_factors_length = {"m": 1.0, "cm": 0.01, "mm": 0.001}
+unit_factors_inductance = {"H": 1.0, "mH": 1e3, "µH": 1e6, "nH": 1e9}
+unit_factors_frequency = {"Hz": 1.0, "kHz": 1e3, "MHz": 1e6, "GHz": 1e9}
 
 def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
     # --- Title -----------------------------
     title_label = tk.Label(frame, text="Self-Inductance of a rectangular double line(low freq.)", font=("Arial", 16, "bold"), bg="white")
-    title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
+    title_label.grid(row=0, column=0, columnspan=5, sticky="w", padx=10, pady=10)
 
     # --- Image (Top-Right) ----------------
     image_path = os.path.join(os.path.dirname(__file__), "pic_rectangular double line.png")
@@ -38,43 +42,65 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # --- Entry Fields ---------------------
-    labels = ["Length l (m)", "Space between centers a (m)", "Width b (m)", "Thickness c (m)"]
+    labels = ["Length l", "Space between centers a", "Width b", "Thickness c"]
     entries = []
-    default_values = ["3","25e-2","8e-3","2.5e-3"]
+    default_values = ["3","25","8","2.5"]
+
+    length_unit_var = tk.StringVar(value="m")
+    distance_unit_var = tk.StringVar(value="cm")
+    width_unit_var = tk.StringVar(value="mm")
+    thickness_unit_var = tk.StringVar(value="mm")
+    output_unit_var = tk.StringVar(value="H")
 
     for i, text in enumerate(labels):
         lbl = tk.Label(frame, text=text, bg="white", anchor="w")
         lbl.grid(row=i+2, column=0, sticky="w", padx=10, pady=5)
 
-        ent = tk.Entry(frame, width=30, textvariable=tk.StringVar(value=default_values[i]))
+        ent = tk.Entry(frame, width=20, textvariable=tk.StringVar(value=default_values[i]))
         ent.grid(row=i+2, column=1, padx=10, pady=5)
         entries.append(ent)
 
+        if i == 0:
+            ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
+                         textvariable=length_unit_var).grid(row=i + 2, column=2, padx=(2, 0))
+        elif i == 1:
+            ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
+                         textvariable=distance_unit_var).grid(row=i + 2, column=2, padx=(2, 0))
+        elif i == 2:
+            ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
+                         textvariable=width_unit_var).grid(row=i + 2, column=2, padx=(2, 0))
+        elif i == 3:
+            ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
+                         textvariable=thickness_unit_var).grid(row=i + 2, column=2, padx=(2, 0))
+
     # --- Result Output ---------------------
-    result_label = tk.Label(frame, text="Inductance (H)", bg="white", anchor="w")
+    result_label = tk.Label(frame, text="Inductance L", bg="white", anchor="w")
     result_label.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
 
     result_var = tk.StringVar()
-    result_entry = tk.Entry(frame, textvariable=result_var, width=30, state="readonly")
+    result_entry = tk.Entry(frame, textvariable=result_var, width=20, state="readonly")
     result_entry.grid(row=12, column=1, padx=10, pady=(15, 5))
 
     precision_label = tk.Label(frame, text="Error < 5%", bg="white", anchor="w")
-    precision_label.grid(row=12, column=2, sticky="w", padx=10, pady=5)
+    precision_label.grid(row=12, column=3, sticky="w", padx=10, pady=5)
+
+    ttk.Combobox(frame, values=list(unit_factors_inductance.keys()), width=5,
+                 textvariable=output_unit_var, state="readonly").grid(row=12, column=2, padx=(2, 0), pady=(15, 5))
     # --- Calculate Button ------------------
     def calculate():
         try:
-            l = float(entries[0].get())*100 #m->cm
-            a = float(entries[1].get())*100 #m->cm
-            b = float(entries[2].get())*100 #m->cm
-            c = float(entries[3].get())*100 #m->cm
+            l = float(entries[0].get())*100*unit_factors_length[length_unit_var.get()] #m->cm
+            a = float(entries[1].get())*100*unit_factors_length[distance_unit_var.get()] #m->cm
+            b = float(entries[2].get())*100*unit_factors_length[width_unit_var.get()] #m->cm
+            c = float(entries[3].get())*100*unit_factors_length[thickness_unit_var.get()] #m->cm
 
-            inductance =  (4*l*(np.log(a/(b+c)) + 1.5 - a/l + 0.2235*(b+c)/l)) * 10**(-9)
+            inductance =  (4*l*(np.log(a/(b+c)) + 1.5 - a/l + 0.2235*(b+c)/l)) * 10**(-9) * unit_factors_inductance[output_unit_var.get()]
             result_var.set(f"{inductance:.4e}")
         except ValueError:
             result_var.set("Invalid input!")
 
     calc_button = tk.Button(frame, text="Calculate", command=calculate, bg="#e1e1e1")
-    calc_button.grid(row=13, column=0, columnspan=2, pady=(10, 5))
+    calc_button.grid(row=13, column=1, columnspan=1, pady=(10, 5))
 
     
     # --- Text ----------------------------
@@ -97,6 +123,6 @@ def create_frame(parent):
         font=("Arial", 10),
         fg="gray"
     )
-    footer.grid(row=15, column=0, columnspan=3, pady=(10, 10))
+    footer.grid(row=15, column=0, columnspan=8, pady=(10, 10))
 
     return frame
