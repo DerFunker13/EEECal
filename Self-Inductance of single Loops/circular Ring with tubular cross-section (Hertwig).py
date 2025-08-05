@@ -70,7 +70,7 @@ def create_frame(parent):
                          textvariable=outdiameter_unit_var).grid(row=i + 2, column=2, padx=(2, 0))
             
     # --- Result Output 1 ---------------------
-    result_label1 = tk.Label(frame, text="Inductance L₀(low. freq.)(H)", bg="white", anchor="w")
+    result_label1 = tk.Label(frame, text="Inductance L₀(low. freq.)", bg="white", anchor="w")
     result_label1.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
 
     result_var1 = tk.StringVar()
@@ -84,7 +84,7 @@ def create_frame(parent):
                  textvariable=output_unit_var, state="readonly").grid(row=12, column=2, padx=(2, 0), pady=(15, 5))
     
     # --- Result Output 2 ---------------------
-    result_label2 = tk.Label(frame, text="Inductance L ͚ (high. freq.)(H)", bg="white", anchor="w")
+    result_label2 = tk.Label(frame, text="Inductance L ͚ (high. freq.)", bg="white", anchor="w")
     result_label2.grid(row=13, column=0, sticky="w", padx=10, pady=(5, 5))
 
     result_var2 = tk.StringVar()

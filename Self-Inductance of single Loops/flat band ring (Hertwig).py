@@ -69,7 +69,7 @@ def create_frame(parent):
     hinweise = tk.Label(frame, text="Thickness << Width", bg="white", anchor="w")
     hinweise.grid(row=4, column=1, padx=10, pady=5)
     # --- Result Output ---------------------
-    result_label = tk.Label(frame, text="Inductance (H)", bg="white", anchor="w")
+    result_label = tk.Label(frame, text="Inductance L₀", bg="white", anchor="w")
     result_label.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
 
     result_var = tk.StringVar()

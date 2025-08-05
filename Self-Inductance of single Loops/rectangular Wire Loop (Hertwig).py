@@ -43,7 +43,7 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # --- Entry Fields ---------------------
-    labels = ["Side length s₁ (m)", "Side length s₂ (m)", "Wire diameter d (m)", "rel. Permeability μᵣ", "Frequency f (Hz)", "Conductance ϰ (S/m)"]
+    labels = ["Side length s₁", "Side length s₂", "Wire diameter d", "rel. Permeability μᵣ", "Frequency f", "Conductance ϰ (S/m)"]
     entries = []
     default_values = ["60","40","10","1","10","59600000.0"]
 
@@ -111,7 +111,7 @@ def create_frame(parent):
     cond_cb.bind("<<ComboboxSelected>>", on_cond_select)
 
     # --- Result Output ---------------------
-    result_label = tk.Label(frame, text="Inductance (H)", bg="white", anchor="w")
+    result_label = tk.Label(frame, text="Inductance L", bg="white", anchor="w")
     result_label.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
 
     result_var = tk.StringVar()
