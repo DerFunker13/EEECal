@@ -117,11 +117,11 @@ def create_frame(parent):
     # --- Footer ----------------------------
     footer = tk.Label(
         frame,
-        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Selbstinduktivität eines Käfigleiters",
+        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Selbstinduktivität einer Reuse.",
         bg="white",
         font=("Arial", 10),
         fg="gray"
     )
-    footer.grid(row=12, column=0, columnspan=4, pady=(10, 10))
+    footer.grid(row=12, column=0, columnspan=6, pady=(10, 10))
 
     return frame

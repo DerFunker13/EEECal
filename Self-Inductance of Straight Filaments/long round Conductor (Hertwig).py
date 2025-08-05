@@ -156,6 +156,6 @@ def create_frame(parent):
         font=("Arial", 10),
         fg="gray"
     )
-    footer.grid(row=12, column=0, columnspan=4, pady=(10, 10))
+    footer.grid(row=12, column=0, columnspan=6, pady=(10, 10))
 
     return frame
