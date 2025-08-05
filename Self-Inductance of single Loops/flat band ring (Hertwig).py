@@ -54,7 +54,7 @@ def create_frame(parent):
         lbl = tk.Label(frame, text=text, bg="white", anchor="w")
         lbl.grid(row=i+2, column=0, sticky="w", padx=10, pady=5)
 
-        ent = tk.Entry(frame, width=30, textvariable=tk.StringVar(value=default_values[i]))
+        ent = tk.Entry(frame, width=20, textvariable=tk.StringVar(value=default_values[i]))
         ent.grid(row=i+2, column=1, padx=10, pady=5)
         entries.append(ent)
         
@@ -73,7 +73,7 @@ def create_frame(parent):
     result_label.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
 
     result_var = tk.StringVar()
-    result_entry = tk.Entry(frame, textvariable=result_var, width=30, state="readonly")
+    result_entry = tk.Entry(frame, textvariable=result_var, width=20, state="readonly")
     result_entry.grid(row=12, column=1, padx=10, pady=(15, 5))
 
     precision_label = tk.Label(frame, text="Error < 5%", bg="white", anchor="w")
@@ -93,7 +93,7 @@ def create_frame(parent):
             result_var.set("Invalid input!")
 
     calc_button = tk.Button(frame, text="Calculate", command=calculate, bg="#e1e1e1")
-    calc_button.grid(row=13, column=0, columnspan=2, pady=(10, 5))
+    calc_button.grid(row=13, column=1, columnspan=1, pady=(10, 5))
 
     
     # --- Text ----------------------------
