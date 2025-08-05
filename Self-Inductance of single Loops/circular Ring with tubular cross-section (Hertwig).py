@@ -17,13 +17,17 @@ from addresources.interpolate import interpolate
 
 #local tables:
 
+# Unit conversion factors
+unit_factors_length = {"m": 1.0, "cm": 0.01, "mm": 0.001}
+unit_factors_inductance = {"H": 1.0, "mH": 1e3, "µH": 1e6, "nH": 1e9}
+unit_factors_frequency = {"Hz": 1.0, "kHz": 1e3, "MHz": 1e6, "GHz": 1e9}
 
 def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
     # --- Title -----------------------------
     title_label = tk.Label(frame, text="Self-Inductance of a circular ring with tubular cross-section", font=("Arial", 16, "bold"), bg="white")
-    title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=10, pady=10)
+    title_label.grid(row=0, column=0, columnspan=8, sticky="w", padx=10, pady=10)
 
     # --- Image (Top-Right) ----------------
     image_path = os.path.join(os.path.dirname(__file__), "pic_rohr ring.jpg")
@@ -38,9 +42,14 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # --- Entry Fields ---------------------
-    labels = ["Diameter D (m)", "inner tubular diameter d₁ (m)", "outer tubular diameter d₂ (m)"]
+    labels = ["Diameter D", "inner tubular diameter d₁", "outer tubular diameter d₂"]
     entries = []
-    default_values = ["50e-2","5e-3","1e-2"]
+    default_values = ["50","5","10"]
+
+    diameter_unit_var = tk.StringVar(value="cm")
+    indiameter_unit_var = tk.StringVar(value="mm")
+    outdiameter_unit_var = tk.StringVar(value="mm")
+    output_unit_var = tk.StringVar(value="H")
 
     for i, text in enumerate(labels):
         lbl = tk.Label(frame, text=text, bg="white", anchor="w")
@@ -50,6 +59,16 @@ def create_frame(parent):
         ent.grid(row=i+2, column=1, padx=10, pady=5)
         entries.append(ent)
 
+        if i == 0:
+            ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
+                         textvariable=diameter_unit_var).grid(row=i + 2, column=2, padx=(2, 0))
+        elif i == 1:
+            ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
+                         textvariable=indiameter_unit_var).grid(row=i + 2, column=2, padx=(2, 0))
+        elif i == 2:
+            ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
+                         textvariable=outdiameter_unit_var).grid(row=i + 2, column=2, padx=(2, 0))
+            
     # --- Result Output 1 ---------------------
     result_label1 = tk.Label(frame, text="Inductance L₀(low. freq.)(H)", bg="white", anchor="w")
     result_label1.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
@@ -59,8 +78,11 @@ def create_frame(parent):
     result_entry1.grid(row=12, column=1, padx=10, pady=(15, 5))
 
     precision_label1 = tk.Label(frame, text="Error < 5%", bg="white", anchor="w")
-    precision_label1.grid(row=12, column=2, sticky="w", padx=10, pady=5)
+    precision_label1.grid(row=12, column=3, sticky="w", padx=10, pady=5)
 
+    ttk.Combobox(frame, values=list(unit_factors_inductance.keys()), width=5,
+                 textvariable=output_unit_var, state="readonly").grid(row=12, column=2, padx=(2, 0), pady=(15, 5))
+    
     # --- Result Output 2 ---------------------
     result_label2 = tk.Label(frame, text="Inductance L ͚ (high. freq.)(H)", bg="white", anchor="w")
     result_label2.grid(row=13, column=0, sticky="w", padx=10, pady=(5, 5))
@@ -74,12 +96,16 @@ def create_frame(parent):
     # --- Calculate Button ------------------
     def calculate():
         try:
-            D = float(entries[0].get())*100 #m->cm
-            d1 = float(entries[1].get())*100 #m->cm
-            d2 = float(entries[2].get())*100 #m->cm
+            D = float(entries[0].get())*100*unit_factors_length[diameter_unit_var.get()] #m->cm
+            d1 = float(entries[1].get())*100*unit_factors_length[indiameter_unit_var.get()] #m->cm
+            d2 = float(entries[2].get())*100*unit_factors_length[outdiameter_unit_var.get()] #m->cm
             
-            inductance_low = (2*np.pi*D*(np.log(8*D/d2)-1.75-(d1**2)/(2*(d2**2-d1**2))+(d1**4)*np.log(d2/d1)/(2*(d2**2-d1**2))))*10**(-9)
-            inductance_high = (2*np.pi*D*(np.log(8*D/d2)-2))*10**(-9)
+            if d1 >= d2:
+                result_var1.set("Invalid input!")
+                result_var2.set("Invalid input!")
+
+            inductance_low = (2*np.pi*D*(np.log(8*D/d2)-1.75-(d1**2)/(2*(d2**2-d1**2))+(d1**4)*np.log(d2/d1)/(2*(d2**2-d1**2))))*10**(-9)* unit_factors_inductance[output_unit_var.get()]
+            inductance_high = (2*np.pi*D*(np.log(8*D/d2)-2))*10**(-9)* unit_factors_inductance[output_unit_var.get()]
             result_var1.set(f"{inductance_low:.4e}")
             result_var2.set(f"{inductance_high:.4e}")
         except ValueError:
@@ -110,6 +136,6 @@ def create_frame(parent):
         font=("Arial", 10),
         fg="gray"
     )
-    footer.grid(row=15, column=0, columnspan=3, pady=(10, 10))
+    footer.grid(row=15, column=0, columnspan=8, pady=(10, 10))
 
     return frame
