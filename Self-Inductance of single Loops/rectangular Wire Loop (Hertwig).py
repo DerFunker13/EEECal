@@ -43,7 +43,7 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # --- Entry Fields ---------------------
-    labels = ["Side length s₁", "Side length s₂", "Wire diameter d", "rel. Permeability μᵣ", "Frequency f", "Conductance ϰ (S/m)"]
+    labels = ["Side length s₁", "Side length s₂", "Wire diameter d", "rel. Permeability μᵣ", "Frequency f", "Conductance ϰ"]
     entries = []
     default_values = ["60","40","10","1","10","59600000.0"]
 
@@ -78,6 +78,9 @@ def create_frame(parent):
             frequency_unit_cb = ttk.Combobox(frame, values=list(unit_factors_frequency.keys()), width=5, state="readonly",
                                             textvariable=frequency_unit_var)
             frequency_unit_cb.grid(row=i + 2, column=2, padx=(2, 0))
+        elif i == 5:
+            cond_unit = tk.Label(frame, text="S/m", bg="white", anchor="w")
+            cond_unit.grid(row=i + 2, column=2, padx=10, pady=5)
 
     # --- Permeability ComboBox -------------
     def on_mu_select(event):

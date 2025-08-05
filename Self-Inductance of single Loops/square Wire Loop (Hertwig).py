@@ -18,6 +18,11 @@ from addresources.interpolate import interpolate
 #local tables:
 
 
+# Unit conversion factors
+unit_factors_length = {"m": 1.0, "cm": 0.01, "mm": 0.001}
+unit_factors_inductance = {"H": 1.0, "mH": 1e3, "µH": 1e6, "nH": 1e9}
+unit_factors_frequency = {"Hz": 1.0, "kHz": 1e3, "MHz": 1e6, "GHz": 1e9}
+
 def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
@@ -38,17 +43,39 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # --- Entry Fields ---------------------
-    labels = ["Side length s (m)", "Wire diameter d (m)", "rel. Permeability μᵣ", "Frequency f (Hz)", "Conductance ϰ (S/m)"]
+    labels = ["Side length s", "Wire diameter d", "rel. Permeability μᵣ", "Frequency f", "Conductance ϰ"]
     entries = []
-    default_values = ["50e-2","1e-2","1","10e6","59600000.0"]
+    default_values = ["50","10","1","10","59600000.0"]
+
+    sidelength_unit_var = tk.StringVar(value="cm")
+    diameter_unit_var = tk.StringVar(value="mm")
+    frequency_unit_var = tk.StringVar(value="MHz")
+    output_unit_var = tk.StringVar(value="H")
 
     for i, text in enumerate(labels):
         lbl = tk.Label(frame, text=text, bg="white", anchor="w")
         lbl.grid(row=i+2, column=0, sticky="w", padx=10, pady=5)
 
-        ent = tk.Entry(frame, width=30, textvariable=tk.StringVar(value=default_values[i]))
+        ent = tk.Entry(frame, width=20, textvariable=tk.StringVar(value=default_values[i]))
         ent.grid(row=i+2, column=1, padx=10, pady=5)
         entries.append(ent)
+
+        # Add unit selection for length and diameter
+        if i == 0:
+            length_unit_cb = ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
+                                          textvariable=sidelength_unit_var)
+            length_unit_cb.grid(row=i + 2, column=2, padx=(2, 0))
+        elif i == 1:
+            diameter_unit_cb = ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
+                                            textvariable=diameter_unit_var)
+            diameter_unit_cb.grid(row=i + 2, column=2, padx=(2, 0))
+        elif i == 3:
+            frequency_unit_cb = ttk.Combobox(frame, values=list(unit_factors_frequency.keys()), width=5, state="readonly",
+                                            textvariable=frequency_unit_var)
+            frequency_unit_cb.grid(row=i + 2, column=2, padx=(2, 0))
+        elif i == 4:
+            cond_unit = tk.Label(frame, text="S/m", bg="white", anchor="w")
+            cond_unit.grid(row=i + 2, column=2, padx=10, pady=5)
 
     # --- Permeability ComboBox -------------
     def on_mu_select(event):
@@ -59,10 +86,10 @@ def create_frame(parent):
             entries[2].insert(0, str(match))
 
     mu_cb_label = tk.Label(frame, text="Material (μᵣ)", bg="white", anchor="w")
-    mu_cb_label.grid(row=3, column=2, sticky="w", padx=10, pady=(5, 0))
+    mu_cb_label.grid(row=3, column=3, sticky="w", padx=10, pady=(5, 0))
 
-    mu_cb = ttk.Combobox(frame, values=[mat for _, mat in mu_table], width=28)
-    mu_cb.grid(row=4, column=2, padx=10, pady=(5, 0))
+    mu_cb = ttk.Combobox(frame, values=[mat for _, mat in mu_table], width=20)
+    mu_cb.grid(row=4, column=3, padx=10, pady=(5, 0))
     mu_cb.bind("<<ComboboxSelected>>", on_mu_select)
 
     # --- Conductance ComboBox --------------
@@ -74,39 +101,42 @@ def create_frame(parent):
             entries[4].insert(0, str(match))
 
     cond_cb_label = tk.Label(frame, text="Material (ϰ)", bg="white", anchor="w")
-    cond_cb_label.grid(row=5, column=2, sticky="w", padx=10, pady=(5, 0))
+    cond_cb_label.grid(row=5, column=3, sticky="w", padx=10, pady=(5, 0))
 
-    cond_cb = ttk.Combobox(frame, values=[mat for _, mat in conductance_table], width=28)
+    cond_cb = ttk.Combobox(frame, values=[mat for _, mat in conductance_table], width=20)
     cond_cb.current(0)
-    cond_cb.grid(row=6, column=2, padx=10, pady=(5, 0))
+    cond_cb.grid(row=6, column=3, padx=10, pady=(5, 0))
     cond_cb.bind("<<ComboboxSelected>>", on_cond_select)
 
     # --- Result Output ---------------------
-    result_label = tk.Label(frame, text="Inductance (H)", bg="white", anchor="w")
+    result_label = tk.Label(frame, text="Inductance L", bg="white", anchor="w")
     result_label.grid(row=12, column=0, sticky="w", padx=10, pady=(15, 5))
 
     result_var = tk.StringVar()
-    result_entry = tk.Entry(frame, textvariable=result_var, width=30, state="readonly")
+    result_entry = tk.Entry(frame, textvariable=result_var, width=20, state="readonly")
     result_entry.grid(row=12, column=1, padx=10, pady=(15, 5))
 
+    ttk.Combobox(frame, values=list(unit_factors_inductance.keys()), width=5,
+                 textvariable=output_unit_var, state="readonly").grid(row=12, column=2, padx=(2, 0), pady=(15, 5))
+
     precision_label = tk.Label(frame, text="Error < 5%", bg="white", anchor="w")
-    precision_label.grid(row=12, column=2, sticky="w", padx=10, pady=5)
+    precision_label.grid(row=12, column=3, sticky="w", padx=10, pady=5)
     # --- Calculate Button ------------------
     def calculate():
         try:
-            s = float(entries[0].get())*100 #m->cm
-            d = float(entries[1].get())*100 #m->cm
+            s = float(entries[0].get())*100*unit_factors_length[sidelength_unit_var.get()] #m->cm
+            d = float(entries[1].get())*100*unit_factors_length[diameter_unit_var.get()]#m->cm
             mu = float(entries[2].get())
-            f = float(entries[3].get())
+            f = float(entries[3].get())*unit_factors_frequency[frequency_unit_var.get()]
             kappa = float(entries[4].get())
             delta = hertwig_skineffekt(f,kappa,d)
-            inductance =  (8*s*(np.log(2*s/d)+d/(2*s)-0.774+mu*delta))*10**(-9)
+            inductance =  (8*s*(np.log(2*s/d)+d/(2*s)-0.774+mu*delta))*10**(-9)* unit_factors_inductance[output_unit_var.get()]
             result_var.set(f"{inductance:.4e}")
         except ValueError:
             result_var.set("Invalid input!")
 
     calc_button = tk.Button(frame, text="Calculate", command=calculate, bg="#e1e1e1")
-    calc_button.grid(row=13, column=0, columnspan=2, pady=(10, 5))
+    calc_button.grid(row=13, column=1, columnspan=1, pady=(10, 5))
 
     
     # --- Text ----------------------------
@@ -129,6 +159,6 @@ def create_frame(parent):
         font=("Arial", 10),
         fg="gray"
     )
-    footer.grid(row=15, column=0, columnspan=3, pady=(10, 10))
+    footer.grid(row=15, column=0, columnspan=9, pady=(10, 10))
 
     return frame
