@@ -27,7 +27,7 @@ def create_frame(parent):
     title_label.grid(row=0, column=0, columnspan=4, sticky="w", padx=10, pady=10)
 
     # --- Image (Top-Right) ----------------
-    image_path = os.path.join(os.path.dirname(__file__), "pic_cage.jpg")
+    image_path = os.path.join(os.path.dirname(__file__), "pic_cage.png")
     try:
         image = Image.open(image_path)
         image = image.resize((250, 200))
