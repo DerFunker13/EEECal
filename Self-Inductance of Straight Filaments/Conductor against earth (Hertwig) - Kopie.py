@@ -19,19 +19,19 @@ unit_factors_length = {"m": 1.0, "cm": 0.01, "mm": 0.001}
 unit_factors_inductance = {"H": 1.0, "mH": 1e3, "µH": 1e6, "nH": 1e9}
 unit_factors_frequency = {"Hz": 1.0, "kHz": 1e3, "MHz": 1e6, "GHz": 1e9}
 
+
 def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
     # --- Title -----------------------------
-    title_label = tk.Label(frame, text="Self-Inductance of a Round Magnetic Conductor",
-                           font=("Arial", 16, "bold"), bg="white")
-    title_label.grid(row=0, column=0, columnspan=5, sticky="w", padx=10, pady=10)
+    title_label = tk.Label(frame, text="Self-Inductance of a double line (forward and return)", font=("Arial", 16, "bold"), bg="white")
+    title_label.grid(row=0, column=0, columnspan=4, sticky="w", padx=10, pady=10)
 
     # --- Image (Top-Right) ----------------
-    image_path = os.path.join(os.path.dirname(__file__), "pic_long round conductor.png")
+    image_path = os.path.join(os.path.dirname(__file__), "pic_round twin line.jpg")
     try:
         image = Image.open(image_path)
-        image = image.resize((200, 250))
+        image = image.resize((200, 125))
         photo = ImageTk.PhotoImage(image)
         image_label = tk.Label(frame, image=photo, bg="white")
         image_label.image = photo
@@ -39,44 +39,45 @@ def create_frame(parent):
     except Exception as e:
         print("Image load error:", e)
 
-    # --- Entry Fields with Unit Selectors ---------------------
-    labels = ["Length l", "Diameter d", "rel. Permeability μᵣ", "Frequency f", "Conductance ϰ (S/m)"]
+    # --- Entry Fields ---------------------
+    labels = ["Length l", "Diameter d", "Distance a", "rel. Permeability μᵣ", "Frequency f", "Conductance ϰ (S/m)"]
     entries = []
-    default_values = ["3", "5", "1", "0", "59600000.0"]
+    default_values = ["3", "5", "25", "1", "0", "59600000.0"]
 
+    # Unit variables
     length_unit_var = tk.StringVar(value="m")
     diameter_unit_var = tk.StringVar(value="mm")
+    distance_unit_var = tk.StringVar(value="cm")
     frequency_unit_var = tk.StringVar(value="Hz")
 
     for i, text in enumerate(labels):
         lbl = tk.Label(frame, text=text, bg="white", anchor="w")
-        lbl.grid(row=i + 2, column=0, sticky="w", padx=0, pady=5)
+        lbl.grid(row=i+2, column=0, sticky="w", padx=10, pady=5)
 
         ent = tk.Entry(frame, width=20, textvariable=tk.StringVar(value=default_values[i]))
-        ent.grid(row=i + 2, column=1, padx=0, pady=5)
+        ent.grid(row=i+2, column=1, padx=0, pady=5)
         entries.append(ent)
 
-        # Add unit selection for length and diameter
         if i == 0:
-            length_unit_cb = ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
-                                          textvariable=length_unit_var)
-            length_unit_cb.grid(row=i + 2, column=2, padx=(2, 0))
+            cb = ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, textvariable=length_unit_var, state="readonly")
+            cb.grid(row=i+2, column=2)
         elif i == 1:
-            diameter_unit_cb = ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, state="readonly",
-                                            textvariable=diameter_unit_var)
-            diameter_unit_cb.grid(row=i + 2, column=2, padx=(2, 0))
-        elif i == 3:
-            frequency_unit_cb = ttk.Combobox(frame, values=list(unit_factors_frequency.keys()), width=5, state="readonly",
-                                            textvariable=frequency_unit_var)
-            frequency_unit_cb.grid(row=i + 2, column=2, padx=(2, 0))
+            cb = ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, textvariable=diameter_unit_var, state="readonly")
+            cb.grid(row=i+2, column=2)
+        elif i == 2:
+            cb = ttk.Combobox(frame, values=list(unit_factors_length.keys()), width=5, textvariable=distance_unit_var, state="readonly")
+            cb.grid(row=i+2, column=2)
+        elif i == 4:
+            cb = ttk.Combobox(frame, values=list(unit_factors_frequency.keys()), width=5, textvariable=frequency_unit_var, state="readonly")
+            cb.grid(row=i+2, column=2)
 
     # --- Permeability ComboBox -------------
     def on_mu_select(event):
         selected = mu_cb.get()
         match = next((v for v, mat in mu_table if mat == selected), None)
         if match is not None:
-            entries[2].delete(0, tk.END)
-            entries[2].insert(0, str(match))
+            entries[3].delete(0, tk.END)
+            entries[3].insert(0, str(match))
 
     mu_cb_label = tk.Label(frame, text="Material (μᵣ)", bg="white", anchor="w")
     mu_cb_label.grid(row=3, column=3, sticky="w", padx=10, pady=(5, 0))
@@ -90,8 +91,8 @@ def create_frame(parent):
         selected = cond_cb.get()
         match = next((v for v, mat in conductance_table if mat == selected), None)
         if match is not None:
-            entries[4].delete(0, tk.END)
-            entries[4].insert(0, str(match))
+            entries[5].delete(0, tk.END)
+            entries[5].insert(0, str(match))
 
     cond_cb_label = tk.Label(frame, text="Material (ϰ)", bg="white", anchor="w")
     cond_cb_label.grid(row=5, column=3, sticky="w", padx=10, pady=(5, 0))
@@ -103,7 +104,7 @@ def create_frame(parent):
 
     # --- Result Output ---------------------
     result_label = tk.Label(frame, text="Inductance L", bg="white", anchor="w")
-    result_label.grid(row=9, column=0, sticky="w", padx=0, pady=(15, 5))
+    result_label.grid(row=9, column=0, sticky="w", padx=10, pady=(15, 5))
 
     result_var = tk.StringVar()
     result_entry = tk.Entry(frame, textvariable=result_var, width=20, state="readonly")
@@ -123,24 +124,25 @@ def create_frame(parent):
         try:
             l = float(entries[0].get())
             d = float(entries[1].get())
-            mu_r = float(entries[2].get())
-            f = float(entries[3].get())
-            kappa = float(entries[4].get())
+            a = float(entries[2].get())
+            mu_r = float(entries[3].get())
+            f = float(entries[4].get())
+            kappa = float(entries[5].get())
 
-            # Convert length and diameter to meters
+            # Convert units
             l_m = l * unit_factors_length[length_unit_var.get()]
             d_m = d * unit_factors_length[diameter_unit_var.get()]
-            f_m = f * unit_factors_frequency[frequency_unit_var.get()]
+            a_m = a * unit_factors_length[distance_unit_var.get()]
+            f_Hz = f * unit_factors_frequency[frequency_unit_var.get()]
 
-            delta = hertwig_skineffekt(f_m, kappa, d_m)
+            delta = hertwig_skineffekt(f_Hz, kappa, d_m)
 
             # Calculate inductance in Henry
-            inductance_H = 2 * l_m * 100 * (np.log(4 * l_m / d_m) - 1 + (mu_r * delta)) * 1e-9
+            L_H = 2 * l_m * 100 * (np.log(a_m / d_m) + mu_r * delta - 1) * 1e-9
 
-            # Convert inductance to selected output unit
+            # Convert to output unit
             output_unit = output_unit_var.get()
-            converted_L = inductance_H * unit_factors_inductance[output_unit]
-
+            converted_L = L_H * unit_factors_inductance[output_unit]
             result_var.set(f"{converted_L:.4e}")
         except ValueError:
             result_var.set("Invalid input!")
@@ -151,7 +153,7 @@ def create_frame(parent):
     # --- Footer ----------------------------
     footer = tk.Label(
         frame,
-        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Selbstinduktivität eines gestreckten Rundleiters",
+        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Selbstinduktivität einer Doppelleitung",
         bg="white",
         font=("Arial", 10),
         fg="gray"
