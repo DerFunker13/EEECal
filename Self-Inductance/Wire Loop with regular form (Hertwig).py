@@ -60,20 +60,6 @@ def create_frame(parent):
         entries.append(ent)
 
     # --- Form ComboBox --------------
-    #formfactor=2.451
-    def on_form_select(event):
-        selected = form_cb.get()
-        match = next((v for v, mat in form_table if mat == selected), None)
-        formfactor=match
-        print(match)
-        if match is not None:
-            form_entry_var=str(match)
-            #form_entry.delete(0, tk.END)
-            #form_entry.insert(0, str(match))
-    #, textvariable=tk.StringVar(value=formfactor)
-    form_entry_var=tk.StringVar()
-    form_entry = tk.Entry(frame, textvariable=form_entry_var, width=30, state="readonly")
-    form_entry.grid(row=4, column=2, padx=10, pady=(5, 0))
 
     form_cb_label = tk.Label(frame, text="Form", bg="white", anchor="w")
     form_cb_label.grid(row=4, column=0, sticky="w", padx=10, pady=(5, 0))
@@ -81,7 +67,7 @@ def create_frame(parent):
     form_cb = ttk.Combobox(frame, values=[mat for _, mat in form_table], width=28)
     #form_cb.current(0)
     form_cb.grid(row=4, column=1, padx=10, pady=(5, 0))
-    form_cb.bind("<<ComboboxSelected>>", on_form_select)
+    form_cb.bind("<<ComboboxSelected>>")
 
     # --- Result Output ---------------------
     result_label = tk.Label(frame, text="Inductance L ͚ (H)", bg="white", anchor="w")
@@ -95,11 +81,15 @@ def create_frame(parent):
     precision_label.grid(row=12, column=2, sticky="w", padx=5, pady=5)
 
     # --- Calculate Button ------------------
+    def form_select():
+        selected = form_cb.get()
+        match = next((v for v, mat in form_table if mat == selected), None)
+        return match
     def calculate():
         try:
             l = float(entries[0].get())*100 #m->cm
             d = float(entries[1].get())*100 #m->cm
-            formfactor = float(form_entry.get())
+            formfactor = float(form_select())
             ind1 = 2*l*(np.log(4*l/d)-formfactor)
             inductance =  (ind1)*10**(-9)
             result_var.set(f"{inductance:.4e}")
