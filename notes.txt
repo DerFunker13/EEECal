@@ -1,3 +1,6 @@
 "L ͚ "
 
 pictures: 4:5 ratio
+
+https://hamwaves.com/inductance/en/index.html#input
+https://www.circuits.dk/calculator_single_layer_aircore.htm
