@@ -50,7 +50,7 @@ def create_frame(parent):
     distance_unit_var = tk.StringVar(value="cm")
     width_unit_var = tk.StringVar(value="mm")
     thickness_unit_var = tk.StringVar(value="mm")
-    output_unit_var = tk.StringVar(value="H")
+    output_unit_var = tk.StringVar(value="µH")
 
     for i, text in enumerate(labels):
         lbl = tk.Label(frame, text=text, bg="white", anchor="w")

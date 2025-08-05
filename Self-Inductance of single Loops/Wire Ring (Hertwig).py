@@ -49,7 +49,7 @@ def create_frame(parent):
 
     diameter_unit_var = tk.StringVar(value="cm")
     wdiameter_unit_var = tk.StringVar(value="mm")
-    output_unit_var = tk.StringVar(value="H")
+    output_unit_var = tk.StringVar(value="µH")
     frequency_unit_var = tk.StringVar(value="MHz")
 
     for i, text in enumerate(labels):

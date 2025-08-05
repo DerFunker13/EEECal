@@ -80,7 +80,7 @@ def create_frame(parent):
     result_entry.grid(row=6, column=1, padx=10, pady=(15, 5))
 
     # Output unit selection
-    output_unit_var = tk.StringVar(value="H")
+    output_unit_var = tk.StringVar(value="µH")
     output_unit_cb = ttk.Combobox(frame, values=list(unit_factors_inductance.keys()), width=5,
                                    textvariable=output_unit_var, state="readonly")
     output_unit_cb.grid(row=6, column=2, padx=(2, 0), pady=(15, 5))

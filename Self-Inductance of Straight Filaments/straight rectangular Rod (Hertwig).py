@@ -51,7 +51,7 @@ def create_frame(parent):
     length_unit_var = tk.StringVar(value="m")
     width_unit_var = tk.StringVar(value="mm")
     thickness_unit_var = tk.StringVar(value="mm")
-    output_unit_var = tk.StringVar(value="H")
+    output_unit_var = tk.StringVar(value="µH")
 
 
     for i, text in enumerate(labels):
