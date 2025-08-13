@@ -30,14 +30,14 @@ def create_frame(parent):
     title_label.grid(row=0, column=0, columnspan=6, sticky="w", padx=10, pady=10)
 
     # --- Image (Top-Right) ----------------
-    image_path = os.path.join(os.path.dirname(__file__), "pic_cylinder coil round wire.jpg")
+    image_path = os.path.join(os.path.dirname(__file__), "pic_ring coil circular cross-section.jpg")
     try:
         image = Image.open(image_path)
         image = image.resize((250, 200))
         photo = ImageTk.PhotoImage(image)
         image_label = tk.Label(frame, image=photo, bg="white")
         image_label.image = photo
-        image_label.grid(row=1, column=3, rowspan=10, sticky="ne", padx=10, pady=10)
+        image_label.grid(row=1, column=4, rowspan=14, sticky="ne", padx=10, pady=10)
     except Exception as e:
         print("Image load error:", e)
 
