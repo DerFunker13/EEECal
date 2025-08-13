@@ -31,11 +31,11 @@ def create_frame(parent):
     frame = tk.Frame(parent, bg="white")
 
     # --- Title -----------------------------
-    title_label = tk.Label(frame, text="Self-Inductance of Single-Layer cylindrical Coil of round Wire (low. freq.)", font=("Arial", 16, "bold"), bg="white")
+    title_label = tk.Label(frame, text="Self-Inductance of Single-Layer Polygon Coil (low. freq.)", font=("Arial", 16, "bold"), bg="white")
     title_label.grid(row=0, column=0, columnspan=6, sticky="w", padx=10, pady=10)
 
     # --- Image (Top-Right) ----------------
-    image_path = os.path.join(os.path.dirname(__file__), "pic_flat band ring.jpg")
+    image_path = os.path.join(os.path.dirname(__file__), "pic_polygon coil.png")
     try:
         image = Image.open(image_path)
         image = image.resize((250, 200))
@@ -47,9 +47,9 @@ def create_frame(parent):
         print("Image load error:", e)
 
     # --- Entry Fields ---------------------
-    labels = ["Coil Diameter D", "Coil Length l", "Number of turns w"]
+    labels = ["Circumcircle Diameter D", "Coil Length l", "Number of turns w", "Number of sides N"]
     entries = []
-    default_values = ["2","20","100"]
+    default_values = ["2","20","100","6"]
 
     diameter_unit_var = tk.StringVar(value="cm")
     length_unit_var = tk.StringVar(value="cm")
@@ -77,7 +77,7 @@ def create_frame(parent):
     result_entry = tk.Entry(frame, textvariable=result_var, width=20, state="readonly")
     result_entry.grid(row=12, column=1, padx=10, pady=(15, 5))
 
-    precision_label = tk.Label(frame, text="Error < 5%", bg="white", anchor="w")
+    precision_label = tk.Label(frame, text="Error ≈ 1%", bg="white", anchor="w")
     precision_label.grid(row=12, column=3, sticky="w", padx=10, pady=5)
 
     ttk.Combobox(frame, values=list(unit_factors_inductance.keys()), width=5,
@@ -88,13 +88,14 @@ def create_frame(parent):
             D = float(entries[0].get())*100* unit_factors_length[diameter_unit_var.get()] #m->cm
             l = float(entries[1].get())*100* unit_factors_length[length_unit_var.get()] #m->cm
             w=float(entries[2].get())
-            
-            (flag, K)=interpolate(KDl[0], KDl[1], (D/l))
+            N=int(entries[3].get())
+            D0=D*(np.cos(np.pi/(2*N)))**2
+            (flag, K)=interpolate(KDl[0], KDl[1], (D0/l))
 
             if flag==1:
                 result_var.set("Invalid input!")
             
-            inductance =  (K*w**2*D)*10**(-9)* unit_factors_inductance[output_unit_var.get()]
+            inductance =  (K*w**2*D0)*10**(-9)* unit_factors_inductance[output_unit_var.get()]
             result_var.set(f"{inductance:.4e}")
         except ValueError:
             result_var.set("Invalid input!")
@@ -118,7 +119,7 @@ def create_frame(parent):
     # --- Footer ----------------------------
     footer = tk.Label(
         frame,
-        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität einlagiger Zylinderspulen aus Runddraht.",
+        text=r"Harry Hertwig: Induktivitäten. Berlin: Verlag für Radio-Foto-Kinotechnik. 1954. Induktivität einlagigen Vieleckspule.",
         bg="white",
         font=("Arial", 10),
         fg="gray"

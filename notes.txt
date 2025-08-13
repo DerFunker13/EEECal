@@ -1,3 +1,9 @@
+Nicht eingefügt:
+-Hertwig:
+	-C3. Induktivität einer einlagigen Rechteckspule (Längsrahmen) (Weil Faktor nur als Grafik)
+	-C4. Induktivität einer einlagigen quadratischen Spule
+
+
 "L ͚ "
 
 pictures: 4:5 ratio
