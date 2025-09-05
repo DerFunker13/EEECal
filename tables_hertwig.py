@@ -29,6 +29,9 @@ KDl=[
 #Korrektur! Originale: 0.28:2.406; 0.90:6.171; 1.20:7.510; 1.80:9.569; 2.60:12.01
 ]
 
+#K1 = 6,2133*np.log(D/h) + 5,6932
+
+
 plt.figure()
 #plt.plot(Q2lh[0],Q2lh[1])
 #plt.plot(P2hl[0],P2hl[1])
